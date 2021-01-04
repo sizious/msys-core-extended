@@ -22,7 +22,6 @@ extracted from [Git for Windows](https://github.com/git-for-windows).
 
 If you want to recompile this source, you will need to have a working 
 [MSYS Toolchain](http://www.mingw.org/wiki/HOWTO_Create_an_MSYS_Build_Environment).
-
 Then, follow the instructions in the `src/msysCORE.RELEASE_NOTES.txt` file.
 
 ## Links
