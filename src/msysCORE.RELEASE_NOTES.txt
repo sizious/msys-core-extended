@@ -36,7 +36,7 @@ Language:
 ========================================================================
 
 Build instructions:
-1) unpack msysCORE-1.0.19-1-msys-1.0.19-src.tar.xz
+1) unpack msysCORE-1.0.19-2-msys-1.0.19-src.tar.xz
 2) Install the build requirements:
   ./msysrlsbld -e build_dep
   (requires mingw-get in PATH)
@@ -47,28 +47,32 @@ See <path-to-source>/msysrlsbld -h for further options.
 
 This will create:
 
-  msysCORE-1.0.19-1-msys-1.0.19-bin.tar.xz
+  msysCORE-1.0.19-2-msys-1.0.19-bin.tar.xz
     MSYS runtime DLL plus basic support files
 
-  msysCORE-1.0.19-1-msys-1.0.19-ext.tar.xz
+  msysCORE-1.0.19-2-msys-1.0.19-ext.tar.xz
     A few support scripts dependent on other MSYS components.
 
-  msysCORE-1.0.19-1-msys-1.0.19-dev.tar.xz
+  msysCORE-1.0.19-2-msys-1.0.19-dev.tar.xz
     Development files for the MSYS runtime.
 
-  msysCORE-1.0.19-1-msys-1.0.19-doc.tar.xz
+  msysCORE-1.0.19-2-msys-1.0.19-doc.tar.xz
     MSYS documentation.
 
-  msysCORE-1.0.19-1-msys-1.0.19-lic.tar.xz
+  msysCORE-1.0.19-2-msys-1.0.19-lic.tar.xz
     MSYS license.
 
-  msysCORE-1.0.19-1-msys-1.0.19-dbg.tar.bz2
+  msysCORE-1.0.19-2-msys-1.0.19-dbg.tar.bz2
     Debug information:
     * msys-1.0-debug.dll - Debug version of the MSYS runtime.
     * strace.exe - System call tracer for use with the above.
     * msys-1.0.dll.dbg - Symbolic information for decoding stack dumps.
 
 ========================================================================
+
+----------  msysCORE-1.0.19-2 -- 2021 Jan 04 -----------
+* Back-porting MSYS_NO_PATHCONV from Git for Windows.
+  See: https://stackoverflow.com/a/34386471/3726096
 
 ----------  msysCORE-1.0.19-1 -- 2016 Jul 13 -----------
 * Fix a buffer overflow vulnerability in execvp (issue #2269).

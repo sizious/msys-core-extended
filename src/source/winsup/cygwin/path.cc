@@ -3027,6 +3027,15 @@ msys_p2w (char const * const path)
 
   debug_printf("msys_p2w (%s)", path);
 
+  // Back-porting MSYS_NO_PATHCONV from Git for Windows
+  // See: https://github.com/git-for-windows/msys2-runtime/pull/11
+  const char *no_pathconv = getenv ("MSYS_NO_PATHCONV");
+  if (no_pathconv)
+  {
+    debug_printf("MSYS_NO_PATHCONV is set, skipping path conversion... returning: %s", path);	  
+    return ((char *)path);
+  }
+
   //
   // copy of the path string that we can overwrite
   //
@@ -3414,7 +3423,7 @@ msys_p2w (char const * const path)
 	    }
 	  //
 	  // Oh well, nothing special found, set win32_path same as path.
-	  //
+	  //  
 	  debug_printf("returning: %s", path);
 	  return ((char *)path);
 	}
