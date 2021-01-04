@@ -15,7 +15,7 @@ extracted from [Git for Windows](https://github.com/git-for-windows).
 
 1. Download the `msysCORE-1.0.19-2-msys-1.0.19-bin.tar.xz`.
 2. Extract the `msys-1.0.dll` file from this package and move this file in your
-   `%MSYSROOT%\msys\1.0\bin` directory, where `%MSYSROOT%` is the **MinGW** 
+   `%MINGW_ROOT%\msys\1.0\bin` directory, where `%MINGW_ROOT%` is the **MinGW** 
    installation directory (typically `C:\MinGW`).
 
 ## Compile
