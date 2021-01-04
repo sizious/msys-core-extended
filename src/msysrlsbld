@@ -1,0 +1,290 @@
+#! /bin/bash
+#
+# Copyright (C) 2002, Earnie Boyd <earnie@users.sf.net>
+# Copyright (C) 2007, 2009 Cesar Strauss <cestrauss@gmail.com>
+#
+# This file is a part of Minimal SYStem (MSYS).
+#
+# Based on the msysrlsbld script, part of msysDVLPR
+#   http://www.mingw.org/MinGWiki/index.php/MSYSBuildEnvironment
+# Inspired on ideas from cygport, part of Cygwin.
+# Inspired on the msys-build-bash script by Charles Wilson.
+
+# The following src_* functions can be overrided in package-specific
+# msysrlsbld.ini files.
+
+src_build()
+{
+  do_build
+}
+
+src_prep()
+{
+  do_prep
+}
+
+src_patch()
+{
+  do_patch
+}
+
+src_configure()
+{
+  do_configure
+}
+
+src_compile()
+{
+  do_compile
+}
+
+src_install()
+{
+  do_install
+}
+
+src_package()
+{
+  :
+}
+
+src_pack_source()
+{
+  :
+}
+
+src_clean()
+{
+  do_clean
+}
+
+src_build_dep()
+{
+  mingw-get install $build_deps
+}
+
+# Configure, make, make install
+#
+do_build()
+{
+  src_prep || fail
+  src_patch || fail
+  src_configure || fail
+  src_compile || fail
+  src_install || fail
+  src_package || fail
+}
+
+# Prepare the source and build directories
+#
+do_prep()
+{
+  mkdir $builddir && cd $builddir || fail
+  if [ -z "$src_filenames" ]; then return; fi
+  echo "Unpacking the original sources..."
+  cd $workdir
+  for src in $src_filenames; do
+    tar -xf $src_basedir/$src || fail
+  done
+}
+
+# Patch source files
+#
+do_patch()
+{
+  if [ -z "$src_patches" ]; then return; fi
+  echo "Applying local patches..."
+  cd $srcdir
+  for p in $src_patches; do
+    echo $p
+    patch -p1 -i $patchdir/$p || fail
+  done
+}
+
+# Configure the build system
+#
+do_configure()
+{
+  echo "Configuring..."
+  : ${install_dirs:="
+    --datarootdir=\${prefix}/share
+    --docdir=\${prefix}/share/doc
+    --sbindir=\${prefix}/sbin
+    --libexecdir=\${prefix}/sbin
+    --sysconfdir=/etc
+    --localstatedir=/var
+  "}
+  
+  cd $builddir && 
+  $srcdir/configure --prefix=/usr $install_dirs $configure_opt
+}
+
+# Compile the sources
+#
+do_compile()
+{
+  echo "Compiling..."
+  cd $builddir &&
+  make $compile_opt
+}
+
+# Install in a staging area
+#
+do_install()
+{
+  echo "Installing into a staging area..."
+  cd $builddir &&
+  make install prefix=$instdir $install_opt &&
+  rm -f $instdir/share/info/dir
+}
+
+# Clean the workplace
+#
+do_clean()
+{
+  echo "Cleaning the workplace..."
+  rm -rf $builddir $instdir
+  # Only remove the source directory if it was unpacked by us.
+  if [ -n "$src_filenames" ]; then
+    rm -rf $srcdir
+  fi
+}
+
+# Package the build results
+#
+do_package()
+{
+  echo "Packaging the build results..."
+}
+
+# Create the source package
+#
+do_pack_source()
+{
+  echo "Creating the source package..."
+}
+
+fail()
+{
+  echo
+  echo "============="
+  echo "Task failed."
+  echo "============="
+  exit 1
+}
+
+succeed()
+{
+  echo
+  echo "================"
+  echo "Task succeeded."
+  echo "================"
+}
+
+show_help()
+{
+  echo "$0: Build packages from source"
+  echo "Usage:"
+  echo "  $0 [-h] [-e command]"
+  echo "With no arguments, it builds from source and packages the result."
+  echo "Use -h to show this message."
+  echo "Use -e to run a specific phase. Commonly accepted ones are:"
+  echo "   build_dep : Install build environment (requires mingw-get)."
+  echo "        prep : Unpacks the original sources."
+  echo "       patch : Apply custom patches."
+  echo "   configure : Runs the configure script."
+  echo "     compile : Runs make."
+  echo "     install : Installs into a staging area."
+  echo "     package : Packages the build results."
+  echo " pack_source : Re-creates the source package."
+  echo "       clean : Cleans the workplace."
+}
+
+if [ "$1" == "-h" ]; then
+  show_help
+  exit
+fi
+
+# Locate the base directory
+basedir=`dirname "$0"`
+basedir=`cd "$basedir" && pwd`
+
+# Working directory
+workdir=$PWD
+
+# Read the package-specific build instructions.
+#
+if [ -f "$basedir/msysrlsbld.ini" ]
+then
+  . "$basedir/msysrlsbld.ini"
+else
+  echo "msysrlsbld.ini file missing."
+  exit 1
+fi
+
+# Read the system-wide preferences
+#
+if [ -f /etc/msysrlsbld.pref ]
+then
+  . /etc/msysrlsbld.pref
+fi
+
+# Read the user-specific preferences
+#
+if [ -f ${HOME}/msysrlsbld.pref ]
+then
+  . ${HOME}/msysrlsbld.pref
+fi
+
+# Location for the packed sources
+: ${src_basedir:=$basedir}
+
+# List of the filenames of the packed sources
+: ${src_names:=$src_name}
+if [ -z "$src_filename" ]; then
+  cd $src_basedir
+  for item in $src_names; do
+    for src in ${item}.tar.*; do
+      if [ -f $src ]; then
+        src_filenames+=" $src";
+        break;
+      fi
+    done
+  done
+fi
+
+# List of patches
+: ${src_patches:=$src_patch}
+
+# Location of the patches
+: ${patchdir:=$basedir}
+
+# Directory name of the extracted sources
+: ${src_dirname:=${pkg_name}-${pkg_version}}
+
+# Top-level source directory
+: ${srcdir:=$workdir/$src_dirname}
+
+# Location for building
+: ${builddir:=$workdir/build}
+
+# Location of staging directory
+: ${instdir:=$workdir/nstl}
+
+# Directory for placing package-specific documentation.
+: ${docdir:=share/doc/${pkg_name}-${pkg_version}}
+
+cmd=build
+
+if [ -n "$1" ]; then
+  case "$1" in
+    -e) cmd=$2;;
+    *)  echo "$0: $1: Unknown option. Use -h for help."; exit;;
+  esac
+fi
+
+if src_$cmd; then
+  succeed
+else
+  fail
+fi

@@ -1,0 +1,11 @@
+2010.01.12  Charles Wilson  <mingw@cwilson.fastmail.fm>
+
+	* libltp/lib/parse_opts.c: Fix bug (and compile
+	error, with gcc3).
+
+2001.09.22  Earnie Boyd  <earnie@SF.net>
+
+	* ChangeLog.cygwin: Renamed original ChangeLog.
+	* winsup.api/ltp/link04.c: Add preprocessor filters for __MSYS__.
+	* winsup.api/ltp/select01.c: Ditto.
+	* winsup.api/ltp/unlink07.c: Ditto.
