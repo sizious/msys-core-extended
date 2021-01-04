@@ -7,9 +7,7 @@ project.
 
 This repository contains the unofficial **msysCORE 1.0.19-2** release which
 implement only one change, comparing to the official [msysCORE 1.0.19-1](https://sourceforge.net/projects/mingw/files/MSYS/Base/msys-core/msys-1.0.19-1/)
-release:
-
-It's now possible to disable the [POSIX path conversion](http://mingw.org/wiki/Posix_path_conversion)
+release: It's now possible to disable the [POSIX path conversion](http://mingw.org/wiki/Posix_path_conversion)
 by setting the `MSYS_NO_PATHCONV` environment variable. This behaviour was
 extracted from [Git for Windows](https://github.com/git-for-windows).
 
@@ -17,8 +15,8 @@ extracted from [Git for Windows](https://github.com/git-for-windows).
 
 1. Download the `msysCORE-1.0.19-2-msys-1.0.19-bin.tar.xz`.
 2. Extract the `msys-1.0.dll` file from this package and move this file in your
-   `%MSYSROOT%\msys\1.0\bin`, where `%MSYSROOT%` is the MinGW installation
-   directory (usually `C:\MinGW`).
+   `%MSYSROOT%\msys\1.0\bin` directory, where `%MSYSROOT%` is the **MinGW** 
+   installation directory (typically `C:\MinGW`).
 
 ## Compile
 
